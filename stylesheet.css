@@ -1,0 +1,156 @@
+/* The Open Sans font which is imported contains 300, 400, 600, 700 and 800*/
+
+
+/* Universal Settings */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 10px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+body {
+    width: 88.9%;
+    margin: auto;
+}
+
+
+/* Header Elements */
+.header {
+    margin-top: 8rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.header .greeting {
+    font-size: 2rem;
+    color: #2C404A;
+    flex: 1;
+}
+
+.header .greeting .light-greeting {
+    font-weight: 400;
+}
+
+.header .date {
+    font-size: 1.5rem;
+    color: #2C404A;
+}
+
+
+/* Form Elements */
+.form {
+    margin-top: 6rem;
+}
+
+.form .todo-textbox {
+    background-color: #E0E0E0;
+    color: #606060;
+    width: 41rem;
+    height: 5.5rem;
+    outline: none;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.form .clear-all-button {
+    margin-left: 3rem;
+    border-radius: 0.5rem;
+    width: 13rem;
+    height: 5.5rem;
+    background: transparent;
+    font-size: 1.4rem;
+    color: #E44A4A;
+    border: 0.2rem solid #E44A4A;
+    outline: none;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out;
+    font-weight: 600;
+}
+
+.form .clear-all-button:hover {
+    background-color: #E44A4A;
+    color: white;
+}
+
+
+/* To-Do Section Elements */
+.todos-section {
+    margin-top: 7rem;
+}
+
+.todos-section .todo-item {
+    font-size: 1.7rem;
+    color: #808080;
+    transition: color 0.2s ease-in-out;
+    cursor: pointer;
+    display: block;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.todos-section .completed-todo-item {
+    text-decoration: line-through;
+    color: #afafaf;
+    font-size: 1.7rem;
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    display: block;
+}
+
+.todos-section .completed-todo-item:hover {
+    color: red;
+}
+
+.todos-section .todo-item:not(:first-child), .todos-section .completed-todo-item:not(:first-child) {
+    margin-top: 4.8rem;
+}
+
+.todos-section .todo-item:hover {
+    text-decoration: line-through;
+    color: #afafaf;
+}
+
+
+/* Media Queries for making the web application responsive for smaller screen. */
+@media screen and (max-width: 750px) {
+    .header {
+        flex-direction: column;
+    }
+
+    .header .greeting {
+        font-size: 3rem;
+    }
+
+    .header .date {
+        margin-top: 2rem;
+    }
+
+    .form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form .todo-textbox {
+        width: 100%;
+    }
+
+    .form .clear-all-button {
+        width: 100%;
+        margin-top: 1rem;
+        margin-left: 0;
+    }
+}
