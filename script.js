@@ -19,21 +19,20 @@ document.querySelector('.date').textContent = `${weekDay}, ${date} ${month} ${ye
 
 
 // Creating a function which deletes everything within the 'Todos Section' and then reloads everything in their new state. It is called initially so that user sees everything when they open the page.
-let loadItems = function() {
+function loadItems() {
     document.querySelector('.todos-section').innerHTML = '';
-    if (localStorage.getItem('todos')) {
-        let listOfTodos = JSON.parse(localStorage.getItem('todos'));
-        listOfTodos.forEach(function(element, index) {
-            if (element.completed == 0) {
-                let currentTodo = document.createElement('button');
-                currentTodo.textContent = `${element.todo}`;
-                currentTodo.classList.add("todo-item");
-                document.querySelector('.todos-section').appendChild(currentTodo);
-            } else if (element.completed == 1) {
-                let currentTodo = document.createElement('button');
-                currentTodo.textContent = `${element.todo}`;
-                currentTodo.classList.add("completed-todo-item");
-                document.querySelector('.todos-section').appendChild(currentTodo);
+    let todosJSON = JSON.parse(localStorage.getItem('todos'));
+    if (todosJSON) {
+        todosJSON.forEach(function(todo, index) {
+            let button = document.createElement('button');
+            button.textContent = `${todo.todo}`;
+
+            if (todo.completed === 0) {
+                button.classList.add('todo-item');
+                document.querySelector('.todos-section').appendChild(button);
+            } else if (todo.completed === 1) {
+                button.classList.add('completed-todo-item');
+                document.querySelector('.todos-section').appendChild(button);
             }
         })
     }
@@ -59,8 +58,8 @@ document.querySelector('.form').addEventListener('submit', function(event) {
         localStorage.setItem('todos', JSON.stringify(JSONTodosArray));
     }
 
-    console.log(localStorage);
     document.querySelector('.todo-textbox').value = '';
+    location.reload();
     loadItems();
 })
 
@@ -69,4 +68,42 @@ document.querySelector('.form').addEventListener('submit', function(event) {
 document.querySelector('.clear-all-button').addEventListener('click', function(event) {
     localStorage.clear();
     loadItems();
+})
+
+
+// Adding functionality to the 'Not Completed' tasks when they are clicked - they become 'Completed'.
+let allUncompletedTodos = document.querySelectorAll('.todo-item');
+let parsedObject = JSON.parse(localStorage.getItem('todos'));
+allUncompletedTodos.forEach(function(todo, index) {
+    todo.addEventListener('click', function(event) {
+        parsedObject.forEach(function(todo, index) {
+            if (todo.todo === event.target.textContent) {
+                todo.completed = 1;
+            }
+        })
+        let stringifiedObject = JSON.stringify(parsedObject);
+        localStorage.setItem('todos', stringifiedObject);
+        location.reload();
+        loadItems();
+    })
+})
+
+
+// Adding functionality to the 'Completed' tasks so that when they are clicked, they get deleted.
+let completedTodos = document.querySelectorAll('.completed-todo-item');
+parsedObject = JSON.parse(localStorage.getItem('todos'));
+completedTodos.forEach(function(todo, index) {
+
+    todo.addEventListener('click', function(event) {
+        parsedObject.forEach(function(todo,index) {
+            if (todo.todo === event.target.textContent) {
+                parsedObject.splice(index,1);
+            }
+        })
+        let stringifiedObject = JSON.stringify(parsedObject);
+        localStorage.setItem('todos', stringifiedObject);
+        location.reload();
+        loadItems();
+    })
+
 })
