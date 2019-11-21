@@ -16,6 +16,7 @@ html {
 body {
     width: 88.9%;
     margin: auto;
+    background-color: white;
 }
 
 
@@ -41,7 +42,6 @@ body {
     font-size: 1.5rem;
     color: #2C404A;
 }
-
 
 /* Form Elements */
 .form {

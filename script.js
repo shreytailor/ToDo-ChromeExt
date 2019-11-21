@@ -1,23 +1,3 @@
-// Importing the configuration JSON file using jQuery.
-$.getJSON('configuration.json', function(dataObject) {
-    // Using the imported data and then setting the 'name' to be equal to the actual name of the person.
-    document.querySelector('.light-greeting').textContent = `${dataObject.name}`;
-})
-
-
-// Setting the current date on the right hand side.
-let dateObject = new Date();
-let dayOptions = {weekday: 'long'};
-let weekDay = new Intl.DateTimeFormat('en-US', dayOptions).format(dateObject);
-let date = dateObject.getDate();
-let monthOptions = {month: 'long'};
-let month = new Intl.DateTimeFormat('en-US', monthOptions).format(dateObject);
-let year = dateObject.getFullYear();
-let hour = dateObject.getHours();
-let minutes = dateObject.getMinutes();
-document.querySelector('.date').textContent = `${weekDay}, ${date} ${month} ${year} | ${hour}:${minutes}`;
-
-
 // This is the main function called 'addFunctionality' which pretty much sets all the Event Listeners to the buttons and the other elements so that the program works as intended for the end-user.
 let addFunctionality = function() {
     // Stopping the reloading from occuring when 'enter' is pressed on the textbox - and adding my own functionality which is to add the item to the current To-Do List.
