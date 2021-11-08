@@ -1,102 +1,83 @@
-// This is the main function called 'addFunctionality' which pretty much sets all the Event Listeners to the buttons and the other elements so that the program works as intended for the end-user.
-let addFunctionality = function() {
-    // Stopping the reloading from occuring when 'enter' is pressed on the textbox - and adding my own functionality which is to add the item to the current To-Do List.
-    document.querySelector('.form').addEventListener('submit', function(event) {
-        event.preventDefault();
+const localStorage = window.localStorage;
 
-        let newTodoObject = {
-            todo: `${document.querySelector('.todo-textbox').value}`,
-            completed: 0
+function render() {
+    const todoSection = document.querySelector(".todos-section");
+    todoSection.innerHTML = "";
+    const todos = JSON.parse(localStorage.getItem("todos"));
+
+    if (todos == null) return;
+
+    for (const todo of todos) {
+        let button = document.createElement("button");
+        button.textContent = todo.text;
+        button.setAttribute("data-timestamp", todo.timestamp);
+
+        if (todo.completed == false) {
+            button.classList.add("incomplete");
+        } else if (todo.completed == true) {
+            button.classList.add("completed");
         }
-
-        if (localStorage.getItem('todos')) {
-            let JSONTodosArray = JSON.parse(localStorage.getItem('todos'));
-            JSONTodosArray.push(newTodoObject);
-            localStorage.setItem('todos', JSON.stringify(JSONTodosArray));
-        } else {
-            let JSONTodosArray = [newTodoObject];
-            localStorage.setItem('todos', JSON.stringify(JSONTodosArray));
-        }
-
-        document.querySelector('.todo-textbox').value = '';
-        loadItems();
-    })
-
-
-    // Adding functionality to the 'Delete All' button so everything in the Local Storage gets deleted when pressed.
-    document.querySelector('.clear-all-button').addEventListener('click', function(event) {
-        localStorage.clear();
-        loadItems();
-    })
-
-
-    // Adding functionality to the 'Not Completed' tasks when they are clicked - they become 'Completed'.
-    let allUncompletedTodos = document.querySelectorAll('.todo-item');
-    let parsedObject = JSON.parse(localStorage.getItem('todos'));
-    allUncompletedTodos.forEach(function(todo, index) {
-        todo.addEventListener('click', function(event) {
-            parsedObject.forEach(function(todo, index) {
-                if (todo.todo === event.target.textContent) {
-                    todo.completed = 1;
-                }
-            })
-            let stringifiedObject = JSON.stringify(parsedObject);
-            localStorage.setItem('todos', stringifiedObject);
-            loadItems();
-        })
-    })
-
-
-    // Adding functionality to the 'Completed' tasks so that when they are clicked, they get deleted.
-    let completedTodos = document.querySelectorAll('.completed-todo-item');
-    parsedObject = JSON.parse(localStorage.getItem('todos'));
-    completedTodos.forEach(function(todo, index) {
-
-        todo.addEventListener('click', function(event) {
-            parsedObject.forEach(function(todo,index) {
-                if (todo.todo === event.target.textContent) {
-                    parsedObject.splice(index,1);
-                }
-            })
-            let stringifiedObject = JSON.stringify(parsedObject);
-            localStorage.setItem('todos', stringifiedObject);
-            loadItems();
-        })
-
-    })
-}
-
-
-// Creating a function which deletes everything within the 'Todos Section' and then reloads everything in their new state. It is called initially so that user sees everything when they open the page.
-function loadItems() {
-    document.querySelector('.todos-section').innerHTML = '';
-    let extractedElements = document.querySelectorAll('.todos-section');
-    extractedElements.forEach(function(element, index) {
-        element.innerHTML = '';
-    })
-
-
-    let todosJSON = JSON.parse(localStorage.getItem('todos'));
-    if (todosJSON) {
-        todosJSON.forEach(function(todo, index) {
-            let button = document.createElement('button');
-            button.textContent = `${todo.todo}`;
-
-            if (todo.completed === 0) {
-                button.classList.add('todo-item');
-                document.querySelector('.todos-section').appendChild(button);
-            } else if (todo.completed === 1) {
-                button.classList.add('completed-todo-item');
-                document.querySelector('.todos-section').appendChild(button);
-            }
-        })
+        
+        todoSection.appendChild(button);
     }
 
-    // Whenever the inner HTML is deleted and then elements are added back into the div, we need to add the Event Listeners again and so that is why we call the function below which recreates all the functionality.
-    addFunctionality();
+    addEventListeners();
+};
+
+function addEventListeners() {
+    document.querySelectorAll(".incomplete").forEach(element => {
+        element.addEventListener("click", event => {
+            console.log("Clicked");
+            let todos = JSON.parse(localStorage.getItem("todos"));
+            
+            todos = todos.map(todo => {
+                if (todo.timestamp == event.target.dataset.timestamp) {
+                    todo.completed = true;
+                }
+    
+                return todo;
+            });
+    
+            localStorage.setItem("todos", JSON.stringify(todos));
+            render();
+        });
+    });
+    
+    document.querySelectorAll(".completed").forEach(element => {
+        element.addEventListener("click", event => {
+            let todos = JSON.parse(localStorage.getItem("todos"));
+    
+            todos = todos.filter(todo => {
+                return !(todo.timestamp == event.target.dataset.timestamp);
+            });
+    
+            localStorage.setItem("todos", JSON.stringify(todos));
+            render();
+        });
+    });
 }
 
+render();
 
-// Initially calling the two functions which loads in the items and then adds functionality to everything like the 'Delete All' button and the textbox and everything.
-loadItems();
-addFunctionality();
+document.querySelector("form").addEventListener("submit", event => {
+    event.preventDefault();
+    if (event.target[0].value == "") return;
+
+    let todos = JSON.parse(localStorage.getItem("todos"));
+    if (todos == null) todos = [];
+    
+    todos.push({
+        text: event.target[0].value,
+        timestamp: Math.round(Date.now() / 1000),
+        completed: false
+    });
+    
+    event.target[0].value = "";
+    localStorage.setItem("todos", JSON.stringify(todos));
+    render();
+});
+
+document.querySelector("#clear-button").addEventListener("click", event => {
+    localStorage.clear();
+    render();
+});
